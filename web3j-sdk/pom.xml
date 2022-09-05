@@ -1,0 +1,231 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.3.10.RELEASE</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.reddate</groupId>
+    <artifactId>hub.web3j</artifactId>
+    <version>0.0.1</version>
+    <packaging>jar</packaging>
+    <name>hub-web3j-sdk</name>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-crypto</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.directory.studio</groupId>
+            <artifactId>org.apache.commons.codec</artifactId>
+            <version>1.8</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.83</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+            <version>1.68</version>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>5.6.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>4.9.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>logging-interceptor</artifactId>
+            <version>4.9.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.web3j</groupId>
+            <artifactId>core</artifactId>
+            <version>4.8.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.web3j</groupId>
+            <artifactId>crypto</artifactId>
+            <version>4.8.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.2</version>
+        </dependency>
+
+    </dependencies>
+
+   <repositories>
+   <repository>
+       <id>SciJava</id>
+       <url>http://maven.scijava.org/content/repositories/public/</url>
+   </repository>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+  </repositories>
+
+    <build>
+        <finalName>did-java-sdk-${project.version}</finalName>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.sonarsource.scanner.maven</groupId>
+                    <artifactId>sonar-maven-plugin</artifactId>
+                    <version>3.6.0.1398</version>
+                </plugin>
+
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>0.8.7</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/lib</outputDirectory>
+							<overWriteReleases>false</overWriteReleases>
+							<overWriteSnapshots>false</overWriteSnapshots>
+							<overWriteIfNewer>true</overWriteIfNewer>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+
+			<plugin>
+        		<groupId>org.apache.maven.plugins</groupId>
+        		<artifactId>maven-source-plugin</artifactId>
+        		<version>2.1.2</version>
+        		<executions>
+          			<execution>
+            			<id>attach-sources</id>
+            			<phase>verify</phase>
+            		<goals>
+              			<goal>jar-no-fork</goal>
+            		</goals>
+          		</execution>
+        	</executions>
+      		</plugin>
+
+            <plugin>
+                <!-- general contract java code command by Maven is:  web3j:generate-sources -->
+                <groupId>io.github.zebraofjustice</groupId>
+                <artifactId>web3j-maven-plugin</artifactId>
+                <version>4.8.4.zebraofjustice</version>
+                <configuration>
+                    <packageName>com.red.udpn.did.service.besu.contract</packageName>
+<!--                    <sourceDestination>src/main/java/generated</sourceDestination>-->
+                    <nativeJavaType>true</nativeJavaType>
+                     <outputFormat>java,bin,abi</outputFormat>
+                    <soliditySourceFiles>
+                        <directory>src/main/contract</directory>
+                        <includes>
+                            <include>**/*.sol</include>
+                        </includes>
+                    </soliditySourceFiles>
+                    <outputDirectory>
+                        <java>src/main/java</java>
+                        <bin>src/generated/bin</bin>
+                        <abi>src/generated/abi</abi>
+                    </outputDirectory>
+                    <contract>
+                        <includes>
+                            <include>greeter</include>
+                        </includes>
+                        <excludes>
+                            <exclude>mortal</exclude>
+                        </excludes>
+                    </contract>
+                    <pathPrefixes>
+                        <pathPrefix>dep=../dependencies</pathPrefix>
+                    </pathPrefixes>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+</project>
+
