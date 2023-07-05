@@ -22,11 +22,13 @@ import com.reddate.hub.pojo.KeyPair;
 import com.reddate.hub.util.AesUtils;
 import com.reddate.hub.util.Secp256Util;
 
+import javax.annotation.Resource;
+
 public class HubApplicationStartingEventListener
-    implements ApplicationListener<ApplicationEnvironmentPreparedEvent> {
+        implements ApplicationListener<ApplicationEnvironmentPreparedEvent> {
 
   private static final Logger logger =
-      LoggerFactory.getLogger(HubApplicationStartingEventListener.class);
+          LoggerFactory.getLogger(HubApplicationStartingEventListener.class);
 
   public static final String SPRING_CONFIG_LOCATION = "spring.config.location";
 
@@ -71,11 +73,12 @@ public class HubApplicationStartingEventListener
     }
 
     if (location == null || location.trim().isEmpty()) {
-      String descDir = HubApplicationStartingEventListener.class.getResource("").toString();
-      descDir =
-          descDir.substring(6, descDir.length() - "com/reddate/hub/server/config/".length())
-              + "application.properties";
-      location = descDir;
+//      String descDir = HubApplicationStartingEventListener.class.getResource("").toString();
+//      descDir =
+//          descDir.substring(6, descDir.length() - "com/reddate/hub/server/config/".length())
+//              + "application.properties";
+//      location = descDir;
+      location =  "application.properties";
     }
 
     return location;
@@ -114,8 +117,9 @@ public class HubApplicationStartingEventListener
     logger.info("the Identify Hub config file path is : " + cfgFile);
     InputStream inputStream = null;
     try {
-      inputStream = new FileInputStream(cfgFile);
-    } catch (FileNotFoundException e) {
+      inputStream = this.getClass().getClassLoader().getResourceAsStream(cfgFile);
+      //inputStream = new FileInputStream(cfgFile);
+    } catch (Exception e) {
       e.printStackTrace();
       throw new RuntimeException("The config file [" + cfgFile + "] do not exists");
     }
@@ -144,9 +148,9 @@ public class HubApplicationStartingEventListener
     String hubPrivateKey = prop.getProperty(HUB_PRIVATE_KEY);
     String hubPublicKey = prop.getProperty(HUB_PUBLIC_KEY);
     if (hubPrivateKey == null
-        || hubPrivateKey.trim().isEmpty()
-        || hubPublicKey == null
-        || hubPublicKey.trim().isEmpty()) {
+            || hubPrivateKey.trim().isEmpty()
+            || hubPublicKey == null
+            || hubPublicKey.trim().isEmpty()) {
       String encptyHubPrivateKey = null;
       try {
         KeyPair keyPair = Secp256Util.createKeyPair(cryptoType);
@@ -183,14 +187,14 @@ public class HubApplicationStartingEventListener
 
       HubConfigUtils.refreshHubConfig(cfgFile, hubPrivateKey, hubPublicKey, cryptoType);
       logger.info(
-          "===============================================================================================");
+              "===============================================================================================");
       logger.info("     ");
       logger.info(
-          "==========         " + "The Encryption Hub Private Key is : " + encptyHubPrivateKey);
+              "==========         " + "The Encryption Hub Private Key is : " + encptyHubPrivateKey);
       logger.info("==========         " + "The Hub Public Key is : " + hubPublicKey);
       logger.info("     ");
       logger.info(
-          "===============================================================================================");
+              "===============================================================================================");
     } else {
       try {
         String aesPwd = AesUtils.generalKey(pwd);
@@ -198,8 +202,8 @@ public class HubApplicationStartingEventListener
       } catch (Exception e) {
         e.printStackTrace();
         throw new IdentityHubException(
-            ErrorMessage.DECRYPT_HUB_PK_FAILED.getCode(),
-            ErrorMessage.DECRYPT_HUB_PK_FAILED.getMessage());
+                ErrorMessage.DECRYPT_HUB_PK_FAILED.getCode(),
+                ErrorMessage.DECRYPT_HUB_PK_FAILED.getMessage());
       }
       HubConfigUtils.refreshHubConfig(cfgFile, hubPrivateKey, hubPublicKey, cryptoType);
     }
